@@ -1,0 +1,119 @@
+\documentclass[a4paper,latin]{paper} 
+\usepackage{babel}
+\usepackage{hyperref}
+\usepackage[margin=2.5cm]{geometry}
+\title{Pathfinding on the Lightning Network (with JIT Routing)}
+\subtitle{A PhD Proposal}
+\author{Rene Pickhardt} 
+\institution{NTNU Gjovik} 
+
+
+\begin{document} 
+\twocolumn[\maketitle 
+\hrule 
+\smalltableofcontents
+\begin{abstract}
+Awesome abstract for the proposal
+\end{abstract}
+
+\begin{keywords}
+Bitcoin, Lightning Network, payment channel networks, path finding, routing, liquidity, flow control, agents, game theory, uncertainty
+\end{keywords}
+\hrule\bigskip
+]
+\section{Disclaimer}
+This is a work in progress it is based on the structure given / required by the Information Technology and Electrical Engineering (c.f.: \url{https://www.ntnu.edu/documents/139736/20785611/Project+description+-+template+-+English.pdf})
+
+\section{Background}
+We will address the problem of finding paths in privacy aware payment channel networks such as the Lightning Network.
+The Lightning Network is the most promesing approach to scale the amount of payments that can be achieved over the Bitcoin Network.
+If a participant in the Lightning Network wants to make a payment she needs to find a path such that each link has enough funds to forward the payment.
+Theoretically with the Dijkstra Algorithm this is a trivially solved path finding problem in computer science.
+However in practice the privacy properties of the Lightning Network hide the information that is necessary to computer the Dijkstra Algorithm.
+Currently path finding on the Lightning Network is solved by a bruteforce approach of trying one potential path after another until a path is found.
+One can easily see that while probing paths the state of network will change as other payments occure.
+This could lead to a situation that a path that was not working in its first try might work in a later point in time.
+Thus the problem is non deterministic.\footnote{If we found a path we know it exists. But as long as we didn't find a path we don't know for sure that it does not exist.}
+With the disired growth of the Lightning Network such a trial and error approach is not feasable.
+
+To achieve a maximal privacy for its users the following cryptographic design decisions have been build into the Lightning Network.
+\begin{enumerate}
+\item The routing scheme is a form of sourced based routing and utilizes the SPHINX mix format \cite{danezis2009sphinx}
+\item Payment channels have a publically known capacity which is privately spread into a local balance between the two nodes that own the channel.
+\end{enumerate}
+
+Since the emergance of the Lightning Network many ideas to solve the path finding problem have been circulating.
+The Whitepaper of the Lightning Network \cite{poon2016bitcoin} briefly mentions that there could be some TOR like routing scheme applied.
+However it is rather vague about the actual routing scheme to be used.
+Already in 2016 Flare \cite{prihodko2016flare} was proposed to fill the void.
+The approach is using local beacon nodes to help to find paths through the network.
+Such an approach might be useful if the Lightning Network was designed without a gossip protocol that announces the partial network topology.
+In a similar way the Ant-routing scheme \cite{grunspan2018ant} was proposed for Lightning Networks consisting only of private channels.
+While this scheme proves to work it will - siliarly to the bitcoin network - involve every participant of the Network for a routing request resulting in poor scaling properties.
+
+The currently most disired aproach is to use multipath payment schemes \cite{osuntokun2018AMP} which have already been investigated \cite{piatkivskyi2018split} in the scientific literature.
+Multipath payment schemes do not only help with pathfinding but also with utilizing the owned liquidity.
+However they have been criticized \cite{pickhardt2019pathfinding} as being to wasteful with resources and actually lacking the danger of delaying the payment process significantly.
+Noval approaches like Boomerang \cite{bagaria2019boomerang} introduce redundent multipath payments to mitigate some of the strongest criticism.
+However the Boomerang approach needs either an hardfork to the bitcoin protocol or an extensive extension to the Lighning Network Protocol. 
+We have proposed Just In Time Routing (JIT Routing) \cite{pickhardt2019jit} which is supposed to get the best effort component into the routing process without violating the privacy properties of the Lightning Network.
+
+While the field of graph theory has a history of more than 200 years to the best of our knowledge graphs with the properties of the Lightning Network in combination with the path finding problem have never been studied in the scientific literature.
+
+In theory nodes can already implement JIT routing without the necessity to have any protocol changes.\footnote{A Basic JIT Routing scheme has recently been implemented by Christian Decker: \url{https://github.com/lightningd/plugins/pull/66}}
+However we assume that backward compatible and small protocol changes like local information sharing of channel balances and fee free rebalancing operations would increase the usefulness of JIT Routing.
+Studying JIT Routing and comparing it with other proposed path finding schemes will be a major goal of the PhD thesis. 
+
+
+
+
+
+\textit{ Give a brief description of the approach and issues that will be addressed in the doctoral thesis.
+ Why is the proposed thesis subject of interest in view of the current state of the art?
+ New knowledge that is expected to result from the research work on the thesis should be
+outlined relative to the state of the art within this field and the candidate’s previous work within
+that field.}
+\section{Objectives}
+ The academic or scientific objectives of the PhD thesis work are to be specified.
+ The objectives are to be listed in points and formulated in a way that enables them to be
+examined and evaluated once the research is concluded.
+\section{Scope}
+ Consider the limitations in the coverage and explain which topics are to be covered by the thesis
+and which issues are outside the scope of the work.
+Research method
+ The research content of the PhD thesis is to be specified.
+ Describe the specific research methods that will be used to achieve the objectives listed under
+point two above.
+ If experimental data is to be collected, describe the research design and data analysis that will be
+used.
+\section{Expected results}
+ The potential new knowledge that could result from the research is to be explained.
+ Show how the findings and results from the thesis can be applied in an industrial context or be
+useful to other sectors such as public administration.
+\section{Work plan/work schedule}
+ State the tasks that will be performed in order to achieve the stated objectives.
+ A schedule that shows the time required for each of the tasks in the work plan should be
+included.
+\section{References}
+\bibliography{proposal}
+\bibliographystyle{plain}
+ The references used to describe the background and current state of the art should be included
+
+\appendix
+\section{Background on Bitcoin and the Lightning network}
+The application of Hashcash \cite{back2002hashcash} - better known as proof of work -  has lead to the emergance of decentralized digital currencies such as Bitcoin\cite{nakamoto2008bitcoin}.
+Decentralization is achieved by replicating the leder of all previously agreed upon transactions to all participants of the network.
+This ledger is refered to as the blockchain.
+This design in combination with the difficulty adjustment of the proof of work system prevent scaling of peer to peer networks such as the Bitcoin Network even when adding more computational resources.
+
+The commonly agreed upon approach to achieve a higher amount of payments is by working offchain.
+Instead of storing all payments as transactions to the common, replicated ledger users will only store special transactions that - with the help of smart contracts - open a payment channel.
+The payment channels can form a network.
+With the help of hashed time locked contracts payments can theoretically be routed from any participant in the network to any other participant. 
+
+The Lightning Network is the most prominent and wide spread example of such a payment channel network.
+We will only work with publically announced chanells and assume that the Lightning Network only consists of publically known channels.
+
+
+\end {document}
+
