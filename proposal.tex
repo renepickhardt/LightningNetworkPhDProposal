@@ -72,13 +72,14 @@ In the past multi path payments have been publicly criticized \cite{pickhardt201
 Novel and sophisticated approaches for multi path payments like Boomerang \cite{bagaria2019boomerang} introduce redundant multi path payments to mitigate some of the strongest criticism.
 However the Boomerang approach needs either a hard fork to the bitcoin protocol or an extensive extension to the Lightning Network Protocol. 
 It was observed that the path finding problem on the Lightning Network might have similarities with path finding in Real Time Strategy games \cite{zmnscpxj2019rts}.
+\textbf{TODO: Not sure if I should mention trampoline payments they seem not to fit into the picture as they basically outsource the routing to a trusted network.}
 
 We have proposed Just In Time Routing (JIT Routing) \cite{pickhardt2019jit} which is supposed to get the best effort component into the source base routing process without violating the privacy properties of the Lightning Network.
 With JIT Routing a node that is supposed to forward a payment on a channel which does not have enough liquidity can interrupt the routing process and start a local re-balancing operation to provide itself \textbf{just in time} with the needed liquidity before continuing the routing process.
 In theory nodes can already implement JIT routing and engage with it without the necessity to have any protocol changes.\footnote{A Basic JIT Routing scheme has recently been implemented by Christian Decker: \url{https://github.com/lightningd/plugins/pull/66}}.
 Understanding the mechanics of JIT Routing it is easy to see that as a heuristic it can be included to any other path finding scheme.
 In particular it is trivial to see that JIT Routing will never decrease the success rate of a routing attempt.
-However in its current form it is believed that JIT-Routing will not be economically feasible for nodes as as they might loose money while engaging in JIT-Routing. This could be mitigated with minor protocol modifications. Studying JIT Routing and comparing it with other proposed path finding schemes will be a major goal of the PhD thesis. 
+However in its current form it is believed that JIT-Routing will not be economically feasible for nodes as as they might loose money while engaging in JIT-Routing. This could be mitigated with minor protocol modifications. Studying JIT Routing, comparing it with other proposed path finding schemes and improving it will be a major goal of the PhD thesis. 
 
 The novelty and importance of this research can easily be seen from the following observation:
 Graph theory has a history of more than 200 years.
@@ -90,7 +91,8 @@ Currently the following research objectives are planned.
 \item Develop a graph theoretic model, framework and notation which can be used to express approaches for path finding in privacy aware payment channel networks.
 \item Find measures from the model to classify and compare existing as well as yet to be introduced path finding techniques. A preliminary list of such measures might include: Success rate, interactivity (with other nodes), information need, privacy, time to complete a payment, run time, memory consumption, protocol compatibility, service level agreement,\dots
 \item Work out the difficulties and trade offs which exist in path finding. The most obvious trade off seems to be the trade off between privacy and success rate\footnote{Probably even the ability to deterministicly guarantee that a path can be found.}.
-\item In particular we want to study the JIT Routing scheme and potential enhancements of it. We suppose that backward compatible and rather small protocol changes like local information sharing of channel balances and fee free re-balancing operations would significantly increase the usefulness of JIT Routing.
+\item In particular we want to study the JIT Routing scheme and potential enhancements of it. We first want to inspect a node that supports JIT routing to demonstrate that the current approach would be economically infeasible.
+\item We suppose that backward compatible and rather small protocol changes like local information sharing of channel balances and fee free re-balancing operations would significantly increase the usefulness of JIT Routing. This shall be investigated in a second study about JIT-Routing. 
 \item Make educated suggestions which path finding techniques and approaches seem most promising.
 \end{enumerate}
 
@@ -107,7 +109,10 @@ In order to do so we need three types of experimental data:
 \end{enumerate}
 
 The simulation will be limited to a turn based simulation of payments instead of a concurrent setup.
-However turns can be much shorter than one payment process so that at least partially the realistic behavior of concurrent payments will be modeled. 
+However turns can be much shorter than one payment process so that at least partially the realistic behavior of concurrent payments will be modeled.
+
+Another dataset comes from the logfiles of the node that runs the JIT-Routing scheme.
+We will measure how much we paid for the rebalancing in comparision to the routing fees to see if the simple JIT Routing is in fact economically infeasible.
 
 The bigger picture of this research is to improve the payment process and user experience of the Lightning Network.
 Path finding seems to be a mandatory requirement to achieve this.
@@ -127,7 +132,6 @@ As there are several companies building the Lightning Network Protocol and softw
 
 \section{Work plan/work schedule}
 
-%\includegraphics{timeline.png}
 \includepdf{timeline.png}
 
 While it would be nice if the research objectives could be achieved in a linear way one after another we do not expet this to happen.
