@@ -1,12 +1,11 @@
-\documentclass[a4paper,latin]{paper} 
-\usepackage{babel}
+\documentclass[a4paper]{paper} 
+%\usepackage{babel}
 \usepackage{hyperref}
 \usepackage[margin=2.5cm]{geometry}
 \title{Pathfinding on the Lightning Network (with JIT Routing)}
 \subtitle{A PhD Proposal}
 \author{Rene Pickhardt} 
 \institution{NTNU Gjovik} 
-
 
 \begin{document} 
 \twocolumn[\maketitle 
@@ -64,7 +63,8 @@ In theory nodes can already implement JIT routing without the necessity to have 
 However we assume that backward compatible and small protocol changes like local information sharing of channel balances and fee free rebalancing operations would increase the usefulness of JIT Routing.
 Studying JIT Routing and comparing it with other proposed path finding schemes will be a major goal of the PhD thesis. 
 
-
+Do a short introduction to JIT routing and how path finding in lightning works in general.
+This would require to model a graph and a path. 
 
 
 
@@ -78,26 +78,46 @@ that field.}
  The objectives are to be listed in points and formulated in a way that enables them to be
 examined and evaluated once the research is concluded.
 \section{Scope}
- Consider the limitations in the coverage and explain which topics are to be covered by the thesis
-and which issues are outside the scope of the work.
+\textit{Consider the limitations in the coverage and explain which topics are to be covered by the thesis and which issues are outside the scope of the work.
 Research method
  The research content of the PhD thesis is to be specified.
  Describe the specific research methods that will be used to achieve the objectives listed under
 point two above.
  If experimental data is to be collected, describe the research design and data analysis that will be
-used.
+used.}
+
+We do not aim to solve the general path finding problem in payment channel networks like the lightning network as this seems far to complex.
+Instead we pursue the following goals:
+\begin{enumerate}
+\item Develop a graph theoretic model, framework and notation which can be used to express approaches for path finding in privacy aware payment channel networks.
+\item We will develop measures to calssify and compare existing as well as novel path finding techniques. A starting point for such measures might include: Success rate, interactivity (with other nodes), information need, privacy, time to complete a payment, runtime, memory consumption, protocol compatability, service level agreement,\dots
+\item Work out the difficulties and trade offs which exist in path finding. The most obvious tradeoff seems to be the tradeoff between privacy and successrate\footnote{Probably even the ability to deterministically guarantee that a path can be found.}.
+\item Make educated suggestions which path finding techniques and approaches seem most promesing.
+\end{enumerate}
+
+We will use simulations of payments within the lightning network and statistical evaluation as the main research method to study and compare the existing approaches.
+In order to do so we need three types of experimental data:
+\begin{enumerate}
+\item The topology of the lightning network which is publically available via the gossip protocol. In combination with the data from the Bitcoin blockchain we can even predict who opened the channel and thus know the initial balance of each payment channel.
+\item A data set of payments between participants in a payment network. While it would be possible to set up several lightning nodes to collect actual data on the lightning network this would require quite some Bitcoin and financial risk.\footnote{It might be possible to talk to liquidity providers such as LNBIG or ACINQ if they would be willing to share some data that they have collected.} It seems more realistic to use the public data set from the Kaggel credit card fraud detection challange\footnote{\url{https://www.kaggle.com/mlg-ulb/creditcardfraud/download}}. The participants in the Kaggel data set need to be mapped to lightning network nodes. This has been done in the past \cite{sivaraman2018routing} in an unspecified way. We intend to do this by a random process. In order to verify the independence of that process we could run our experiments several times with different mappings. 
+\item In order to have a good baseline it makes sense to not only simulate the currently used approaches with our synthetic data set but collect some data from our own lightning node by making payment attempts to other participants.\footnote{By paying to fake payment hashes one can simulate the success of such payments without actually sending money to other nodes}. This data set can be used to gauge the results from the simulations on the synthetic payment data set.
+\end{enumerate}
+
 \section{Expected results}
- The potential new knowledge that could result from the research is to be explained.
+\textit{ The potential new knowledge that could result from the research is to be explained.
  Show how the findings and results from the thesis can be applied in an industrial context or be
-useful to other sectors such as public administration.
+useful to other sectors such as public administration.}
+We expect to gain a deeper understanding of how to handle uncertainty in privacy aware payment channel networks.
+In the best case we will be able to demonstrate the superiority of a certain path finding scheme or even come up with one by using the insight from our research.
+As there are several companies building the Lightning Network Protocol and software and as ther is heavy open source development on the Mailinglist\footnote{\url{https://lists.linuxfoundation.org/pipermail/lightning-dev/}} and in the git repositories \footnote{\url{https://github.com/lightningnetwork/lightning-rfc}} we expect that the results will be picked up by the open source community and industry.
+
 \section{Work plan/work schedule}
  State the tasks that will be performed in order to achieve the stated objectives.
  A schedule that shows the time required for each of the tasks in the work plan should be
 included.
-\section{References}
+
 \bibliography{proposal}
 \bibliographystyle{plain}
- The references used to describe the background and current state of the art should be included
 
 \appendix
 \section{Background on Bitcoin and the Lightning network}
