@@ -2,8 +2,11 @@
 %\usepackage{babel}
 \usepackage{hyperref}
 \usepackage[margin=2.5cm]{geometry}
+\usepackage{pdfpages}
+%\usepackage{graphicx}
+\graphicspath{{img/}}
 \title{Pathfinding on the Lightning Network (with JIT Routing)}
-\subtitle{A PhD Proposal}
+\subtitle{A PhD Proposal - Draft version}
 \author{Rene Pickhardt} 
 \institution{NTNU Gjovik} 
 
@@ -12,88 +15,88 @@
 \hrule 
 \smalltableofcontents
 \begin{abstract}
-Awesome abstract for the proposal
+  This PhD proposal follows the structure provided by the Faculty of Engineering Science from the Norwegian University of Science and and Technology (NTNU).
+  It suggests to commit 3 years of a PhD study to the path finding problem within privacy aware payment channel networks such as the Lightning Network.
+  The path finding problem is non trivial as the topology of the network is only partially known and changes dynamically over time resulting in a non deterministic problem with uncertainty. 
+  We propose to create a review of suggested approaches and methods by developing measures to evaluate the quality of path finding methods in such an environment.
+  We also propose to collect data about the known topology of the lightning network and probe for less public data.
+  Also we suggest to use financial transaction data from public credit card fraud detection challanges as a basis to evaluate the studied approaches by the scientific method of simulations.
+  Furthermore we wish to conduct more experiments to refine the Just In Time Routing schemes (JIT-Routing) which has been proposed by us in early 2019.
+  While it can be shown that in its basic form the JIT-Routing heuristic will always improve the routing process it will in its most basic form be economically infeasable for nodes to engage in the JIT-Routing scheme.
+  Our goal is to come up with extensions of the scheme that make it viable while keeping almost the same privacy guarantees that the Lightning Network offers.
+  We plan the publication of 3 papers and one technical report to conduct this study. 
+The template of this proposal can be found at: \url{https://www.ntnu.edu/documents/139736/20785611/Project+description+-+template+-+English.pdf}
 \end{abstract}
 
 \begin{keywords}
-Bitcoin, Lightning Network, payment channel networks, path finding, routing, liquidity, flow control, agents, game theory, uncertainty
+Bitcoin, Lightning Network, payment channel networks, path finding, routing, liquidity, flow control, congestion control, game theory, uncertainty, simulations, agent based systems, collaborative problem solving, 
 \end{keywords}
 \hrule\bigskip
 ]
-\section{Disclaimer}
-This is a work in progress it is based on the structure given / required by the Information Technology and Electrical Engineering (c.f.: \url{https://www.ntnu.edu/documents/139736/20785611/Project+description+-+template+-+English.pdf})
 
 \section{Background}
 We will address the problem of finding paths in privacy aware payment channel networks such as the Lightning Network.
-The Lightning Network is the most promesing approach to scale the amount of payments that can be achieved over the Bitcoin Network.
-If a participant in the Lightning Network wants to make a payment she needs to find a path such that each link has enough funds to forward the payment.
+The Lightning Network is the most promising approach to scale the amount of payments that can be achieved over the Bitcoin Network.
+In its current design everytime a participant wants to make a payment she needs to find a path to the recipient such that each link has enough funds to forward the payment.
 Theoretically with the Dijkstra Algorithm this is a trivially solved path finding problem in computer science.
-However in practice the privacy properties of the Lightning Network hide the information that is necessary to computer the Dijkstra Algorithm.
-Currently path finding on the Lightning Network is solved by a bruteforce approach of trying one potential path after another until a path is found.
-One can easily see that while probing paths the state of network will change as other payments occure.
-This could lead to a situation that a path that was not working in its first try might work in a later point in time.
-Thus the problem is non deterministic.\footnote{If we found a path we know it exists. But as long as we didn't find a path we don't know for sure that it does not exist.}
-With the disired growth of the Lightning Network such a trial and error approach is not feasable.
+In practice the privacy properties of the Lightning Network hide the information about the available liquidity on the existing payment channels (edges) of the network.
+Thus crucial topology information is missing and the Dijkstra Algorithm cannot be applied.
 
 To achieve a maximal privacy for its users the following cryptographic design decisions have been build into the Lightning Network.
 \begin{enumerate}
-\item The routing scheme is a form of sourced based routing and utilizes the SPHINX mix format \cite{danezis2009sphinx}
-\item Payment channels have a publically known capacity which is privately spread into a local balance between the two nodes that own the channel.
+\item The routing scheme is similar to the sourced based onion routing of the TOR network and utilizes the SPHINX mix format \cite{danezis2009sphinx}
+\item Payment channels have a publically known capacity which is privately spread into a local balance between the two nodes that own the channel. The local balance is not shared with the network. Thus standard path finding techniques known from graph theory cannot be used out of the box.
 \end{enumerate}
 
-Since the emergance of the Lightning Network many ideas to solve the path finding problem have been circulating.
+Currently path finding on the Lightning Network is solved by a bruteforce approach of trying one potential path after another one.
+It is easy to see that while probing paths the state of network can change as other payments are conducted successfuly.
+This could lead to a situation in which a path that was not working on the first attempt might work at a later point in time.
+Thus besides uncertainty the problem is highly dynamic and non deterministic.\footnote{If we found a path we know it exists. But as long as we do not find a path we do not know for sure that no path exists.}
+With the disired growth and adoption of the Lightning Network the current path finding strategy does not seem to be feasable.
+In particular payments should always be known to succeed or fail within a certain short time period (in the order of at most a few seconds).
+While successfull pathfinding seems not sufficient to achieve this goal it seems to be a mandatory requirement to at least be able to give a certain quality assurence or service level agreement.
+
 The Whitepaper of the Lightning Network \cite{poon2016bitcoin} briefly mentions that there could be some TOR like routing scheme applied.
-However it is rather vague about the actual routing scheme to be used.
-Already in 2016 Flare \cite{prihodko2016flare} was proposed to fill the void.
-The approach is using local beacon nodes to help to find paths through the network.
-Such an approach might be useful if the Lightning Network was designed without a gossip protocol that announces the partial network topology.
-In a similar way the Ant-routing scheme \cite{grunspan2018ant} was proposed for Lightning Networks consisting only of private channels.
-While this scheme proves to work it will - siliarly to the bitcoin network - involve every participant of the Network for a routing request resulting in poor scaling properties.
+However it is rather vague about the actual routing scheme to be used and does not say a word about path finding technices.
+Already in 2016 Flare \cite{prihodko2016flare} was proposed to fill the void of the whitepaper.
+The approach is using local beacon nodes which oversee the network topology and help to find paths.
+Ant-routing \cite{grunspan2018ant} was proposed for a Lightning Network which consists only of private channels.
+Though it can be shown that the ant scheme will always find a path it will - similarily to the Bitcoin Network - involve every participant of the Network for each payment attempt resulting in poor scaling properties.
+Both approaches might be useful if the Lightning Network was designed without a gossip protocol.
+However the Lightning Network developers decided to include a gossip protocol\footnote{\url{https://github.com/lightningnetwork/lightning-rfc/blob/master/07-routing-gossip.md}} that shares partial information about the topology.
+Thus approaches that utilize this information seem more feasable to examine.
 
-The currently most disired aproach is to use multipath payment schemes \cite{osuntokun2018AMP} which have already been investigated \cite{piatkivskyi2018split} in the scientific literature.
-Multipath payment schemes do not only help with pathfinding but also with utilizing the owned liquidity.
-However they have been criticized \cite{pickhardt2019pathfinding} as being to wasteful with resources and actually lacking the danger of delaying the payment process significantly.
-Noval approaches like Boomerang \cite{bagaria2019boomerang} introduce redundent multipath payments to mitigate some of the strongest criticism.
-However the Boomerang approach needs either an hardfork to the bitcoin protocol or an extensive extension to the Lighning Network Protocol. 
-We have proposed Just In Time Routing (JIT Routing) \cite{pickhardt2019jit} which is supposed to get the best effort component into the routing process without violating the privacy properties of the Lightning Network.
+The currently most disired approach by the open source community is to use multipath payment schemes \cite{osuntokun2018AMP} which have already been investigated \cite{piatkivskyi2018split} in the scientific literature and have been demonstrated to have a higher success rate than the current approach.
+Multipath payment schemes are popular because they do not only help with pathfinding but also with utilizing the owned liquidity of a participant in the network.
+In the past multipath payments have been publically criticized \cite{pickhardt2019pathfinding} as being to wasteful with resources and yielding the danger of delaying the time to complete of the payment process significantly.
+Noval and sophisticated approaches for multipath patyments like Boomerang \cite{bagaria2019boomerang} introduce redundent multipath payments to mitigate some of the strongest criticism.
+However the Boomerang approach needs either a hardfork to the bitcoin protocol or an extensive extension to the Lightning Network Protocol. 
+It was observed that the pathfinding problem on the Lightning Network might have similarities with pathfinding in Real Time Strategy games \cite{zmnscpxj2019rts}.
 
-While the field of graph theory has a history of more than 200 years to the best of our knowledge graphs with the properties of the Lightning Network in combination with the path finding problem have never been studied in the scientific literature.
+We have proposed Just In Time Routing (JIT Routing) \cite{pickhardt2019jit} which is supposed to get the best effort component into the source base routing process without violating the privacy properties of the Lightning Network.
+With JIT Routing a node that is supposed to forward a payment on a channel which does not have enough liquidity can interrupt the routing process and start a local rebalancing operation to provide itself \textbf{just in time} with the needed liquidity before continueing the routing process.
+In theory nodes can already implement JIT routing and engage with it without the necessity to have any protocol changes.\footnote{A Basic JIT Routing scheme has recently been implemented by Christian Decker: \url{https://github.com/lightningd/plugins/pull/66}}.
+Understanding the mechanics of JIT Routing it is easy to see that as a heuristic it can be included to any other path finding scheme.
+In particular it is trivial to see that JIT Routing will never decrease the success rate of a routing attempt.
+However in its current form it is believed that JIT-Routing will not be economically feasable for nodes as as they might loose money while engaging in JIT-Routing. This could be mitigated with minor protocol modifications. Studying JIT Routing and comparing it with other proposed path finding schemes will be a major goal of the PhD thesis. 
 
-In theory nodes can already implement JIT routing without the necessity to have any protocol changes.\footnote{A Basic JIT Routing scheme has recently been implemented by Christian Decker: \url{https://github.com/lightningd/plugins/pull/66}}
-However we assume that backward compatible and small protocol changes like local information sharing of channel balances and fee free rebalancing operations would increase the usefulness of JIT Routing.
-Studying JIT Routing and comparing it with other proposed path finding schemes will be a major goal of the PhD thesis. 
+The novelty and importance of this research can easily be seen from the following observation:
+Graph theory has a history of more than 200 years.
+To the best of our knowledge graphs with the properties of the Lightning Network in combination with the path finding problem have never been studied in the scientific literature before.
 
-Do a short introduction to JIT routing and how path finding in lightning works in general.
-This would require to model a graph and a path. 
-
-
-
-\textit{ Give a brief description of the approach and issues that will be addressed in the doctoral thesis.
- Why is the proposed thesis subject of interest in view of the current state of the art?
- New knowledge that is expected to result from the research work on the thesis should be
-outlined relative to the state of the art within this field and the candidate’s previous work within
-that field.}
 \section{Objectives}
- The academic or scientific objectives of the PhD thesis work are to be specified.
- The objectives are to be listed in points and formulated in a way that enables them to be
-examined and evaluated once the research is concluded.
-\section{Scope}
-\textit{Consider the limitations in the coverage and explain which topics are to be covered by the thesis and which issues are outside the scope of the work.
-Research method
- The research content of the PhD thesis is to be specified.
- Describe the specific research methods that will be used to achieve the objectives listed under
-point two above.
- If experimental data is to be collected, describe the research design and data analysis that will be
-used.}
-
-We do not aim to solve the general path finding problem in payment channel networks like the lightning network as this seems far to complex.
-Instead we pursue the following goals:
+Currently the following research objectives are planned.
 \begin{enumerate}
 \item Develop a graph theoretic model, framework and notation which can be used to express approaches for path finding in privacy aware payment channel networks.
-\item We will develop measures to calssify and compare existing as well as novel path finding techniques. A starting point for such measures might include: Success rate, interactivity (with other nodes), information need, privacy, time to complete a payment, runtime, memory consumption, protocol compatability, service level agreement,\dots
+\item Find measures from the model to classify and compare existing as well as yet to be introduced path finding techniques. A preliminary list of such measures might include: Success rate, interactivity (with other nodes), information need, privacy, time to complete a payment, runtime, memory consumption, protocol compatability, service level agreement,\dots
 \item Work out the difficulties and trade offs which exist in path finding. The most obvious tradeoff seems to be the tradeoff between privacy and successrate\footnote{Probably even the ability to deterministically guarantee that a path can be found.}.
+\item In particular we want to study the JIT Routing scheme and potential enhancments of it. We conject that backward compatible and rather small protocol changes like local information sharing of channel balances and fee free rebalancing operations would significantly increase the usefulness of JIT Routing.
 \item Make educated suggestions which path finding techniques and approaches seem most promesing.
 \end{enumerate}
+
+\section{Scope}
+The main focus is to gain a better understanding of how to do path finding in dynamically changing graphs in which limited topology information is available.
+While it might be interesting to study the dynamic changes of the network itself and while this information might be possible to crawl we do not focus our activies in this direction.
 
 We will use simulations of payments within the lightning network and statistical evaluation as the main research method to study and compare the existing approaches.
 In order to do so we need three types of experimental data:
@@ -103,15 +106,47 @@ In order to do so we need three types of experimental data:
 \item In order to have a good baseline it makes sense to not only simulate the currently used approaches with our synthetic data set but collect some data from our own lightning node by making payment attempts to other participants.\footnote{By paying to fake payment hashes one can simulate the success of such payments without actually sending money to other nodes}. This data set can be used to gauge the results from the simulations on the synthetic payment data set.
 \end{enumerate}
 
+The simulation will be limited to a turn based simulation of payments instead of a concurrent setup.
+However turns can be much shorter than one payment process so that at least partially the realistic behaviour of concurrent payments will be modelled. 
+
+The bigger picture of this research is to improve the payment process and user experience of the Lightning Network.
+Path finding seems to be a mandatory requirement to achieve this.
+Yet other extensions of the Lightning Network such as cancable and stuckless payments\cite{gondo2019stucklss} will most likely be necessary too.
+As these proposals are related to the cryptographic protocols of the Lightning Network they are explicetly excluded from this research.
+
+While we would be delighted if we solved the general path finding or even the payment problem in privacy aware payment channel networks we will not aim for this goal as it seems far to complex for a PhD thesis.
+
+
 \section{Expected results}
-\textit{ The potential new knowledge that could result from the research is to be explained.
- Show how the findings and results from the thesis can be applied in an industrial context or be
-useful to other sectors such as public administration.}
+%\textit{ The potential new knowledge that could result from the research is to be explained.
+% Show how the findings and results from the thesis can be applied in an industrial context or be
+%useful to other sectors such as public administration.}
 We expect to gain a deeper understanding of how to handle uncertainty in privacy aware payment channel networks.
 In the best case we will be able to demonstrate the superiority of a certain path finding scheme or even come up with one by using the insight from our research.
 As there are several companies building the Lightning Network Protocol and software and as ther is heavy open source development on the Mailinglist\footnote{\url{https://lists.linuxfoundation.org/pipermail/lightning-dev/}} and in the git repositories \footnote{\url{https://github.com/lightningnetwork/lightning-rfc}} we expect that the results will be picked up by the open source community and industry.
 
 \section{Work plan/work schedule}
+
+%\includegraphics{timeline.png}
+\includepdf{timeline.png}
+
+While it would be nice if the research objectives could be achieved in a linear way one after another we do not expet this to happen.
+For example developing proper models, frameworks and notation seems to be an iterative process which will be refined over the time and with experience.
+
+We will start our research with a survey article of path finding techniques in the lightning network.
+This should not take more than the first year and will be used to achieve the first two objectives (modelling, measuring and coming up with a taxonomy).
+
+In parallel we will start to collect and clean the data that will be necessary to do the planed experiments.
+This will in particular include the temporal evolution of the known topology information of the Lightning Network.
+The data collection process is probably ongoing during the remainder of the PhD programm.
+In the best case it will just require a little bit of monitoring.
+However we plan some buffer time every quater for unforseable protocol changes that allow other data to be collected or which need to happen with implementation changes.
+
+As soon as we finnished our survey we will be able to finalize our simulation framework and conduct experments that utilize the collected data and compare the various path finding techniques.
+
+In particular we will be able to start the experiments regarding JIT routing. \textbf{I am not to happy about the proposal. JIT can already be implemented in a live setting and we can collect some data. at least about the economic issues with JIT routing...}
+
+with tasks one to three
  State the tasks that will be performed in order to achieve the stated objectives.
  A schedule that shows the time required for each of the tasks in the work plan should be
 included.
