@@ -121,19 +121,13 @@ As these proposals are related to the cryptographic protocols of the Lightning N
 
 While we would be delighted if we solved the general path finding or even the payment problem in privacy aware payment channel networks we will not aim for this goal as it seems far to complex for a PhD thesis.
 
-
 \section{Expected results}
-%\textit{ The potential new knowledge that could result from the research is to be explained.
-% Show how the findings and results from the thesis can be applied in an industrial context or be
-%useful to other sectors such as public administration.}
 We expect to gain a deeper understanding of how to handle uncertainty in privacy aware payment channel networks.
+In particular we will understand what additional information is necessary to make JIT-Routing a useful path finding scheme. 
 In the best case we will be able to demonstrate the superiority of a certain path finding scheme or even come up with one by using the insight from our research.
 As there are several companies building the Lightning Network Protocol and software and as there is heavy open source development on the Mailing list\footnote{\url{https://lists.linuxfoundation.org/pipermail/lightning-dev/}} and in the git repositories \footnote{\url{https://github.com/lightningnetwork/lightning-rfc}} we expect that the results will be picked up by the open source community and industry.
 
 \section{Work plan/work schedule}
-
-\includepdf{timeline.png}
-
 While it would be nice if the research objectives could be achieved in a linear way one after another we do not expet this to happen.
 For example developing proper models, frameworks and notation seems to be an iterative process which will be refined over the time and with experience.
 
@@ -148,12 +142,14 @@ However we plan some buffer time every quarter for unforeseeable protocol change
 
 As soon as we finished our survey we will be able to finalize our simulation framework and conduct experiments that utilize the collected data and compare the various path finding techniques.
 
-In particular we will be able to start the experiments regarding JIT routing. \textbf{I am not to happy about the proposal. JIT can already be implemented in a live setting and we can collect some data. at least about the economic issues with JIT routing...}
+In particular we will be able to start the experiments regarding JIT routing.
+An earily step will be to enable JIT-Routing on a Lightning Network node so that we can collect data about the usage of JIT Routing even if we have to subsidise the algorithm by paying more for the rebalancing fees than we earn by routing the payments.
 
-with tasks one to three
- State the tasks that will be performed in order to achieve the stated objectives.
- A schedule that shows the time required for each of the tasks in the work plan should be
-included.
+Having all this information and experience we will be able to fully analyze and study how JIT-Routing schemese need to be deployed to be as useful as possible.
+The study about refining the JIT-Routing schemes will lead to our last publication.
+Everything will be summarized in the dissertation and defense at the end (: 
+
+A more detailed overview can be found at the end of the document in the table. 
 
 \bibliography{proposal}
 \bibliographystyle{plain}
@@ -172,6 +168,15 @@ With the help of hashed time locked contracts payments can theoretically be rout
 
 The Lightning Network is the most prominent and wide spread example of such a payment channel network.
 We will only work with publicly announced channels and assume that the Lightning Network only consists of publicly known channels.
+
+\null\newpage
+\null\newpage
+\begin{minipage}[t]{0.8\linewidth}
+  \includepdf[scale=0.85,pagecommand={},linktodoc=true]{timeline.png}
+\end{minipage}
+
+
+
 
 
 \end {document}
