@@ -54,17 +54,17 @@ Theoretically with the Dijkstra Algorithm this is a trivially solved path findin
 In practice the privacy properties of the Lightning Network hide the information about the available liquidity on the existing payment channels (edges) of the network.
 Thus crucial topology information is missing and the Dijkstra Algorithm cannot be applied.
 
-To achieve maximal privacy for its users the following cryptographic design decisions have been build into the Lightning Network.
+To achieve maximal privacy for its users the following design decisions have been built into the Lightning Network.
 \begin{enumerate}
 \item The routing scheme is similar to the sourced based onion routing of the TOR network and utilizes the SPHINX mix format \cite{danezis2009sphinx}
-\item Payment channels have a publicly known capacity which is privately spread into a local balance between the two nodes that own the channel. The local balance is not shared with the network. Thus standard path finding techniques known from graph theory cannot be applied directly.
+\item Payment channels have a publicly known capacity which is privately partitioned into a local balance between the two nodes that own the channel. The local balance is not shared with the network. Thus standard path finding techniques known from graph theory cannot be applied directly.
 \end{enumerate}
 
 Currently path finding on the Lightning Network is solved by a brute force approach of trying one potential path after another one.
 It is easy to see that while probing paths the state of network can change as other payments are conducted successfully.
 This could lead to a situation in which a path that was not working on the first attempt might work at a later point in time.
 
-Thus besides uncertainty the problem is highly dynamic and non deterministic.\footnote{If we found a path we would know it exists. But as long as we do not find a path we will not know for sure that no path exists.}
+Thus besides uncertainty the problem is highly dynamic and nondeterministic.\footnote{If we found a path we would know it exists. But as long as we do not find a path we will not know for sure that no path exists.}
 With the desired growth and adoption of the Lightning Network the current path finding strategy does not seem to be feasible.
 In particular payments should always be known to succeed or fail within a certain short time period (in the order of at most a few seconds).
 While successful path finding seems not sufficient to achieve this goal it seems to be a mandatory requirement to at least be able to give a certain quality assurance or service level agreement.
@@ -84,7 +84,7 @@ The currently most desired approach by the open source community is to use multi
 Multi path payment schemes are popular because they do not only help with path finding but also with utilizing the owned liquidity of a participant in the network.
 In the past multi path payments have been publicly criticized \cite{pickhardt2019pathfinding} as being too wasteful with resources and yielding the danger of delaying the time to complete of the payment process significantly.
 Novel and sophisticated approaches for multi path payments like Boomerang \cite{bagaria2019boomerang} introduce redundant multi path payments to mitigate some of the strongest criticism.
-However the Boomerang approach needs either a hard fork to the bitcoin protocol or an extensive extension to the Lightning Network Protocol. 
+However the Boomerang approach needs either a fork to the bitcoin protocol or an extensive extension to the Lightning Network Protocol. 
 It was observed that the path finding problem on the Lightning Network might have similarities with path finding in Real Time Strategy games \cite{zmnscpxj2019rts}.
 
 We have proposed Just In Time Routing (JIT Routing) \cite{pickhardt2019jit} which is supposed to get the best effort component into the source base routing process without violating the privacy properties of the Lightning Network.
@@ -92,8 +92,8 @@ With JIT Routing a node that is supposed to forward a payment on a channel which
 In theory nodes can already implement JIT routing and engage with it without the necessity to have any protocol changes.\footnote{A Basic JIT Routing scheme has recently been implemented by Christian Decker: \url{https://github.com/lightningd/plugins/pull/66}}.
 Understanding the mechanics of JIT Routing it is easy to see that as a heuristic it can be included to any other path finding scheme.
 In particular it is trivial to see that JIT Routing will never decrease the success rate of a routing attempt.
-However in its current form it is believed that JIT-Routing will not be economically feasible for nodes as as they might loose money while engaging in JIT-Routing.
-Currenly nodes will try paths starting with the one that takes the cheapest routing fee.
+However in its current form it is believed that JIT-Routing will not be economically feasible for nodes as as they might lose money while engaging in JIT-Routing.
+Currently nodes will try paths starting with the one that takes the cheapest routing fee.
 If the rebalancing operation would be cheaper than the fees the node takes for routing the payment that path would have been already tested by the sender to begin with.
 This could be mitigated with minor protocol modifications like the addition of fee free circular payments that could be used to rebalancing.
 A similar approach was suggested in Revive \cite{khalil2017revive} where groups could rebalance their channels with an open and transparent smart contract that was cryptographically secured.
@@ -105,7 +105,7 @@ Currently the following research objectives are planned.
 \begin{enumerate}
 \item Develop a graph theoretic model, framework and notation which can be used to express approaches for path finding in privacy aware payment channel networks.
 \item Find measures from the model to classify and compare existing as well as yet to be introduced path finding techniques. A preliminary list of such measures might include: Success rate, interactivity (with other nodes), information need, privacy, time to complete a payment, run time, memory consumption, protocol compatibility, service level agreement,\dots
-\item Work out the difficulties and trade offs which exist in path finding. The most obvious trade off seems to be the trade off between privacy and success rate\footnote{Probably even the ability to deterministicly guarantee that a path can be found.}.
+\item Work out the difficulties and trade offs which exist in path finding. The most obvious trade off seems to be the trade off between privacy and success rate\footnote{Probably even the ability to deterministically guarantee that a path can be found.}.
 \item Study and understand if path finding can be solved when we seek for privacy, scalablity and want to support a dynamically changing network or if one has to drop at least one requirement. 
 \item In particular we want to study the JIT Routing scheme and potential enhancements of it. We first want to inspect a node that supports JIT routing to demonstrate that the current approach would improve the routing successrate over the network despite being economically infeasible.
 \item We suppose that backward compatible and rather small protocol changes like local information sharing of channel balances and fee free re-balancing operations would significantly increase the usefulness of JIT Routing. This shall be investigated in a second study about JIT-Routing. 
@@ -156,19 +156,19 @@ The data collection process is probably ongoing during the remainder of the PhD 
 In the best case it will just require a little bit of monitoring.
 However we plan some buffer time every quarter for unforeseeable protocol changes that allow other data to be collected or which need to happen with implementation changes.
 
-As soon as we finished our survey we will be able to finalize our simulation framework and conduct experiments that utilize the collected data and compare the various path finding techniques.
+As soon as we finish our survey we will be able to finalize our simulation framework and conduct experiments that utilize the collected data and compare the various path finding techniques.
 
 In particular we will be able to start the experiments regarding JIT routing.
-An earily step will be to enable JIT-Routing on a Lightning Network node so that we can collect data about the usage of JIT Routing even if we have to subsidise the algorithm by paying more for the rebalancing fees than we earn by routing the payments.
+An early step will be to enable JIT-Routing on a Lightning Network node so that we can collect data about the usage of JIT Routing even if we have to subsidise the algorithm by paying more for the rebalancing fees than we earn by routing the payments.
 
 Having all this information and experience we will be able to fully analyze and study how JIT-Routing schemese need to be deployed to be as useful as possible.
 The study about refining the JIT-Routing schemes will lead to our last publication.
-Everything will be summarized in the dissertation and defense at the end (: 
+Everything will be summarized in the dissertation and defense at the end.
 
-As the Lightnining Network is the most prominant example of a payment channel network and most research is connected to the development of the Lightning Network we will also regularly spend time to participate in the Lightning Network Open Source community.
+As the Lightning Network is the most prominent example of a payment channel network and most research is connected to the development of the Lightning Network we will also regularly spend time to participate in the Lightning Network Open Source community.
 New ideas are proposed, shared and discussed over the lightning-dev mailinglist\footnote{\url{https://lists.linuxfoundation.org/pipermail/lightning-dev/}}.
 The ongoing specification work of the protocol takes place in the lightning-rfc git repository \footnote{\url{https://github.com/lightningnetwork/lighting-rfc}}.
-In order to keep track of new ideas and proposals but also to successfully dissiminate our results we will closely follow and contribute the lightning network devleoper community on a regular basis during the PhD program with roughly 15 \% of our time.
+In order to keep track of new ideas and proposals but also to successfully dissiminate our results we will closely follow and contribute the lightning network developer community on a regular basis during the PhD program with roughly 15 \% of our time.
 
 A more detailed overview of the allocated time can be found at the end of the document in the table.
 
@@ -182,7 +182,7 @@ Decentralization is achieved by replicating the ledger of all previously agreed 
 This ledger is referred to as the blockchain.
 This design in combination with the difficulty adjustment of the proof of work system prevent scaling of peer to peer networks such as the Bitcoin Network even when adding more computational resources.
 
-The commonly agreed upon approach to achieve a higher amount of payments is by working off chain.
+The commonly agreed upon approach for achieving a higher throughput of payments is by working off chain.
 Instead of storing all payments as transactions to the common, replicated ledger users will only store special transactions that - with the help of smart contracts - open a payment channel.
 The payment channels can form a network.
 With the help of hashed time locked contracts payments can theoretically be routed from any participant in the network to any other participant. 
