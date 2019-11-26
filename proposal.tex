@@ -36,14 +36,14 @@ Bitcoin, Lightning Network, payment channel networks, path finding, routing, liq
 
 \section{Background}
 We will address the problem of finding paths in privacy aware payment channel networks such as the Lightning Network.
-These peer to peer networks are created to allow their participants to route payments through a network of payment channels to another participant.
+These peer to peer networks are created in order to allow their participants to route payments through a network of payment channels to another participant.
 Usually the unit of account of such payments is some cryptocurrency.
 However with stronger data protection regulations like the GDPR and privacy demands by customers even banks might be forced in the future to replace the SWIFT network with a privacy aware payment channel network.
-Routing payments through such a network is usually proceeded by finding a path of payment channels so that all channels have enough liquidity to fullfil the forwarding of payments to send funds from one participant to another one.
-As in privacy aware payment channel networks the liquidity is kept private to the network a crucial topological information is missing to conduct a traditional path finding algorithm. 
-Additionally the already uncertain topology is changing with every payment attempt independent of its success.
-The main focus of this PhD project will be to gain a better understanding of how to deal with the uncertainty to conduct a successfull path finding in such a dynamically changing graph in which only limited topological information is available.
-In the very best case one would be able to guarantee the fulfilment of a service level agreement.
+Routing payments through such a network is usually proceeded by finding a path of payment channels so that all channels have enough liquidity to fulfill the forwarding of payments for sending funds from one participant to another one.
+As in privacy aware payment channel networks the current liquidity state is kept private to the network a crucial topological information is missing for conducting a traditional path finding algorithm. 
+Additionally the already uncertain topology is changing with every payment attempt independently of its success.
+The main focus of this PhD project will be to gain a better understanding of how to deal with this uncertainty in order to conduct a successful path finding in such a dynamically changing graph in which only limited topological information is available.
+In the very best case one would be able to guarantee the fulfillment of a service level agreement.
 
 As the Lightning Network is the most relevant example of a privacy aware payment channel network we decided to choose it as the leading use case and example throughout our research.
 However the applications and results of our research will not be limited to the Lightning Network and could be applied to any other payment channel network such as the Raiden Network.
